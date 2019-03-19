@@ -43,21 +43,22 @@ import org.gradle.internal.snapshot.impl.DefaultFileSystemMirror
 import org.gradle.internal.snapshot.impl.DefaultFileSystemSnapshotter
 import org.gradle.test.fixtures.AbstractProjectBuilderSpec
 import org.gradle.util.Path
+import org.gradle.work.InputChanges
 import spock.lang.Unroll
 
 import java.util.function.BiFunction
 
 class DefaultTransformerInvokerTest extends AbstractProjectBuilderSpec {
 
-    def workExecutorTestFixture = new WorkExecutorTestFixture()
 
     def immutableTransformsStoreDirectory = temporaryFolder.file("output")
     def mutableTransformsStoreDirectory = temporaryFolder.file("child/build/transforms")
 
+    def executionHistoryStore = new TestExecutionHistoryStore()
     def fileSystemMirror = new DefaultFileSystemMirror(new DefaultWellKnownFileLocations([]))
+    def workExecutorTestFixture = new WorkExecutorTestFixture(fileSystemMirror, executionHistoryStore)
     def fileSystemSnapshotter = new DefaultFileSystemSnapshotter(TestFiles.fileHasher(), new StringInterner(), TestFiles.fileSystem(), fileSystemMirror)
 
-    def executionHistoryStore = new TestExecutionHistoryStore()
     def transformationWorkspaceProvider = new TestTransformationWorkspaceProvider(immutableTransformsStoreDirectory, executionHistoryStore)
 
     def fileCollectionFactory = TestFiles.fileCollectionFactory()
@@ -126,12 +127,17 @@ class DefaultTransformerInvokerTest extends AbstractProjectBuilderSpec {
         }
 
         @Override
+        boolean requiresInputChanges() {
+            return false
+        }
+
+        @Override
         boolean isCacheable() {
             return false
         }
 
         @Override
-        ImmutableList<File> transform(File inputArtifact, File outputDir, ArtifactTransformDependencies dependencies) {
+        ImmutableList<File> transform(File inputArtifact, File outputDir, ArtifactTransformDependencies dependencies, InputChanges inputChanges) {
             return ImmutableList.copyOf(transformationAction.apply(inputArtifact, outputDir))
         }
 

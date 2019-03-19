@@ -33,6 +33,17 @@ Some plugins will break with this new version of Gradle, for example because the
 . Run `gradle wrapper --gradle-version {gradleVersion}` to update the project to {gradleVersion}.
 . Try to run the project and debug any errors using the <<troubleshooting.adoc#troubleshooting, Troubleshooting Guide>>.
 
+[[changes_5.4]]
+== Upgrading from 5.3 and earlier
+
+=== Deprecated classes, methods and properties
+
+==== Using custom local build cache implementations
+
+Using a custom build cache implementation for the local build cache is now deprecated.
+The only allowed type will be `DirectoryBuildCache` going forward.
+There is no change in the support for using custom build cache implementations as the remote build cache.
+
 [[changes_5.3]]
 == Upgrading from 5.2 and earlier
 
@@ -83,6 +94,15 @@ The legacy behaviour of Gradle, prior to 5.0, was still in place instead of bein
 ==== Delete operations correctly handle symbolic links on Windows
 
 Gradle no longer ignores the `followSymlink` option on Windows for the `clean` task, all `Delete` tasks, and `project.delete {}` operations in the presence of junction points and symbolic links.
+
+==== Fix in publication of additional artifacts
+
+In previous Gradle versions, additional artifacts registered at the project level were not published by `maven-publish` or `ivy-publish` unless they were also added as artifacts in the publication configuration.
+
+With Gradle 5.3, these artifacts are now properly accounted for and published.
+
+This means that artifacts that are registered both on the project _and_ the publication, Ivy or Maven, will cause publication to fail since it will create duplicate entries.
+The fix is to remove these artifacts from the publication configuration.
 
 [[changes_5.2]]
 == Upgrading from 5.1 and earlier
