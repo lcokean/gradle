@@ -110,7 +110,6 @@ fun ProjectFeatures.buildReportTab(title: String, startPage: String) {
     }
 }
 
-private
 fun BaseGradleBuildType.checkCleanM2Step(os: Os = Os.linux) {
     steps {
         script {
@@ -132,7 +131,6 @@ fun BaseGradleBuildType.verifyTestFilesCleanupStep(daemon: Boolean = true) {
     }
 }
 
-private
 fun BaseGradleBuildType.gradleRunnerStep(model: CIBuildModel, gradleTasks: String, os: Os = Os.linux, extraParameters: String = "", daemon: Boolean = true) {
     val buildScanTags = model.buildScanTags + listOfNotNull(stage?.id)
 
@@ -153,7 +151,6 @@ fun BaseGradleBuildType.gradleRunnerStep(model: CIBuildModel, gradleTasks: Strin
     }
 }
 
-private
 fun BaseGradleBuildType.gradleRerunnerStep(model: CIBuildModel, gradleTasks: String, os: Os = Os.linux, extraParameters: String = "", daemon: Boolean = true) {
     val buildScanTags = model.buildScanTags + listOfNotNull(stage?.id)
 
